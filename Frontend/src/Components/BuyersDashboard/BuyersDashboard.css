@@ -1,0 +1,55 @@
+.buyer-dashboard {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 50px 20px;
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
+  min-height: 100vh;
+  text-align: center;
+}
+
+.buyer-dashboard h1 {
+  font-size: 3rem;
+  color: #00695c;
+  margin-bottom: 50px;
+}
+
+.dashboard-card-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.second-row {
+  justify-content: center;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 20px;
+  padding: 50px 30px;
+  width: 320px;
+  height: 230px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  text-align: center;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-card h2 {
+  font-size: 1.6rem;
+  color: #00796b;
+  margin-bottom: 15px;
+}
+
+.dashboard-card p {
+  font-size: 1.05rem;
+  color: #444;
+  margin: 0 auto;
+  width: 90%;
+}

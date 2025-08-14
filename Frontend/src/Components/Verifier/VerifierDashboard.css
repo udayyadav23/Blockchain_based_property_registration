@@ -1,0 +1,107 @@
+.verifier-dashboard {
+  background-color: #f0f6ff;
+  padding: 40px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.verifier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.verifier-header h1 {
+  font-size: 32px;
+  color: #083358;
+}
+
+.history-button {
+  background-color: #083358;
+  color: #ffffff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-button:hover {
+  background-color: #062849;
+}
+
+.loading-text,
+.empty-text {
+  font-size: 18px;
+  color: #666;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.verifier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 25px;
+}
+
+.verifier-card {
+  background: #ffffff;
+  border: 1px solid #cfe0f3;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 72, 156, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.verifier-card:hover {
+  transform: translateY(-5px);
+}
+
+.icon {
+  font-size: 28px;
+  color: #1769aa;
+  margin-bottom: 10px;
+}
+
+.verifier-card h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #0d3b66;
+}
+
+.verifier-card p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.ipfs-link {
+  color: #004ea2;
+  text-decoration: none;
+}
+
+.ipfs-link:hover {
+  text-decoration: underline;
+}
+
+.verify-button {
+  margin-top: 15px;
+  background-color: #0d6efd;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.verify-button:hover {
+  background-color: #0952c5;
+}

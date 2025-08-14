@@ -1,0 +1,66 @@
+.seller-dashboard-container {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
+  min-height: 100vh;
+  text-align: center;
+}
+
+.dashboard-title {
+  font-size: 3.2rem;
+  color: #00695c;
+  margin-bottom: 60px;
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Uniform card styling */
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 25px;
+  padding: 70px 50px;
+  width: 420px;
+  height: 340px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-card:nth-child(4) {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-icon {
+  font-size: 3.4rem;
+  color: #00796b;
+  margin-bottom: 25px;
+}
+
+.dashboard-card h2 {
+  font-size: 1.8rem;
+  color: #00796b;
+  margin-bottom: 16px;
+}
+
+.dashboard-card p {
+  font-size: 1.15rem;
+  color: #444;
+  margin-bottom: 10px;
+}

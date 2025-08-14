@@ -1,0 +1,265 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BuyerActions {
+    uint256 public nextPropertyId = 1;
+    address public verifier = 0x9AddFC1aFB7c5711b8078dde11efEe560377072a;
+
+    modifier onlyVerifier() {
+        require(msg.sender == verifier, "Only verifier can perform this action");
+        _;
+    }
+
+    struct Property {
+        uint256 id;
+        address currentOwner;
+        string surveyNumber;
+        string location;
+        uint256 area;
+        string ipfsHash;
+        bool isVerified;
+        bool isListed;
+    }
+
+    struct PurchaseRequest {
+        uint256 propertyId;
+        address buyer;
+        bool isApproved;
+        bool isPaid;
+    }
+
+    mapping(uint256 => Property) public properties;
+    mapping(uint256 => PurchaseRequest[]) public propertyRequests;
+    mapping(address => PurchaseRequest[]) public buyerRequests;
+    mapping(uint256 => address[]) public ownershipHistory;
+
+    event PropertyAdded(uint256 indexed propertyId, address indexed owner);
+    event PurchaseRequested(uint256 indexed propertyId, address indexed buyer);
+    event PaymentMade(uint256 indexed propertyId, address indexed buyer, address indexed seller);
+    event OwnershipTransferred(uint256 indexed propertyId, address from, address to);
+    event PropertyVerified(uint256 indexed propertyId);
+
+    // Seller adds property
+    function addPropertyAsVerified(
+        string memory _surveyNumber,
+        uint256 _area,
+        string memory _location,
+        string memory _ipfsHash
+    ) public {
+        properties[nextPropertyId] = Property({
+            id: nextPropertyId,
+            currentOwner: msg.sender,
+            surveyNumber: _surveyNumber,
+            location: _location,
+            area: _area,
+            ipfsHash: _ipfsHash,
+            isVerified: false,
+            isListed: false
+        });
+
+        emit PropertyAdded(nextPropertyId, msg.sender);
+        nextPropertyId++;
+    }
+
+    function verifyProperty(uint256 _propertyId) public onlyVerifier {
+        Property storage prop = properties[_propertyId];
+        require(!prop.isVerified, "Already verified");
+        prop.isVerified = true;
+        prop.isListed = true;
+        emit PropertyVerified(_propertyId);
+    }
+
+    function sendPurchaseRequest(uint256 _propertyId) public {
+        require(_propertyId > 0 && _propertyId < nextPropertyId, "Invalid property ID");
+
+        Property memory prop = properties[_propertyId];
+        require(prop.isVerified && prop.isListed, "Property not for sale");
+        require(prop.currentOwner != msg.sender, "Owner cannot send request");
+
+        PurchaseRequest[] storage existingRequests = propertyRequests[_propertyId];
+        for (uint256 i = 0; i < existingRequests.length; i++) {
+            require(existingRequests[i].buyer != msg.sender, "Request already sent");
+        }
+
+        PurchaseRequest memory newRequest = PurchaseRequest({
+            propertyId: _propertyId,
+            buyer: msg.sender,
+            isApproved: false,
+            isPaid: false
+        });
+
+        propertyRequests[_propertyId].push(newRequest);
+        buyerRequests[msg.sender].push(newRequest);
+
+        emit PurchaseRequested(_propertyId, msg.sender);
+    }
+
+    function approveRequest(uint256 _propertyId, address _buyer) public {
+        Property storage prop = properties[_propertyId];
+        require(prop.currentOwner == msg.sender, "Only owner can approve");
+
+        PurchaseRequest[] storage requests = propertyRequests[_propertyId];
+        for (uint256 i = 0; i < requests.length; i++) {
+            if (requests[i].buyer == _buyer) {
+                requests[i].isApproved = true;
+                break;
+            }
+        }
+
+        PurchaseRequest[] storage buyerReqs = buyerRequests[_buyer];
+        for (uint256 j = 0; j < buyerReqs.length; j++) {
+            if (buyerReqs[j].propertyId == _propertyId) {
+                buyerReqs[j].isApproved = true;
+                break;
+            }
+        }
+    }
+
+    function makePayment(uint256 _propertyId) public payable {
+        Property storage prop = properties[_propertyId];
+
+        require(prop.isVerified && prop.isListed, "Invalid property");
+        require(prop.currentOwner != msg.sender, "Owner can't pay");
+
+        PurchaseRequest[] storage requests = propertyRequests[_propertyId];
+        bool validRequest = false;
+
+        for (uint256 i = 0; i < requests.length; i++) {
+            if (requests[i].buyer == msg.sender && requests[i].isApproved && !requests[i].isPaid) {
+                requests[i].isPaid = true;
+                validRequest = true;
+                break;
+            }
+        }
+
+        require(validRequest, "No approved request found for buyer");
+
+        PurchaseRequest[] storage buyerReqs = buyerRequests[msg.sender];
+        for (uint256 j = 0; j < buyerReqs.length; j++) {
+            if (buyerReqs[j].propertyId == _propertyId && buyerReqs[j].isApproved && !buyerReqs[j].isPaid) {
+                buyerReqs[j].isPaid = true;
+                break;
+            }
+        }
+
+        address previousOwner = prop.currentOwner;
+        prop.currentOwner = msg.sender;
+        prop.isListed = false;
+
+        // 👇 Push to ownership history
+        ownershipHistory[_propertyId].push(previousOwner);
+        ownershipHistory[_propertyId].push(msg.sender);
+
+        payable(previousOwner).transfer(msg.value);
+
+        emit PaymentMade(_propertyId, msg.sender, previousOwner);
+        emit OwnershipTransferred(_propertyId, previousOwner, msg.sender);
+    }
+
+    function getMyProperties() public view returns (Property[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (properties[i].currentOwner == msg.sender) {
+                count++;
+            }
+        }
+
+        Property[] memory myProps = new Property[](count);
+        uint256 idx = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (properties[i].currentOwner == msg.sender) {
+                myProps[idx] = properties[i];
+                idx++;
+            }
+        }
+
+        return myProps;
+    }
+
+    function getMyRequests() public view returns (PurchaseRequest[] memory) {
+        return buyerRequests[msg.sender];
+    }
+
+    function getRequestsForProperty(uint256 _propertyId) public view returns (PurchaseRequest[] memory) {
+        return propertyRequests[_propertyId];
+    }
+
+    function getAllProperties() public view returns (Property[] memory) {
+        uint256 count = nextPropertyId - 1;
+        Property[] memory all = new Property[](count);
+        for (uint256 i = 1; i <= count; i++) {
+            all[i - 1] = properties[i];
+        }
+        return all;
+    }
+
+    function getOwnedProperties() public view returns (Property[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (properties[i].currentOwner == msg.sender) {
+                count++;
+            }
+        }
+
+        Property[] memory owned = new Property[](count);
+        uint256 index = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (properties[i].currentOwner == msg.sender) {
+                owned[index] = properties[i];
+                index++;
+            }
+        }
+
+        return owned;
+    }
+
+    function getUnverifiedProperties() public view returns (Property[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (!properties[i].isVerified) {
+                count++;
+            }
+        }
+
+        Property[] memory unverified = new Property[](count);
+        uint256 index = 0;
+        for (uint256 i = 1; i < nextPropertyId; i++) {
+            if (!properties[i].isVerified) {
+                unverified[index] = properties[i];
+                index++;
+            }
+        }
+
+        return unverified;
+    }
+
+    function getApprovedRequestsForBuyer() public view returns (PurchaseRequest[] memory) {
+        PurchaseRequest[] memory all = buyerRequests[msg.sender];
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < all.length; i++) {
+            if (all[i].isApproved && !all[i].isPaid) {
+                count++;
+            }
+        }
+
+        PurchaseRequest[] memory filtered = new PurchaseRequest[](count);
+        uint256 index = 0;
+        for (uint256 i = 0; i < all.length; i++) {
+            if (all[i].isApproved && !all[i].isPaid) {
+                filtered[index] = all[i];
+                index++;
+            }
+        }
+
+        return filtered;
+    }
+
+    function getPropertyDetailsWithHistory(uint256 _propertyId) public view returns (
+        Property memory,
+        address[] memory
+    ) {
+        return (properties[_propertyId], ownershipHistory[_propertyId]);
+    }
+
+}

@@ -1,0 +1,91 @@
+.sent-requests-container {
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #e1f5fe, #f3e5f5);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sent-title {
+  font-size: 2.5rem;
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.request-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.request-card {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  padding: 1.8rem;
+  width: 320px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.request-card:hover {
+  transform: scale(1.05);
+}
+
+.request-card h2 {
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.request-card p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.request-card a {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.status-badge {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.paid {
+  color: #27ae60;
+}
+
+.approved {
+  color: #f39c12;
+}
+
+.pending {
+  color: #c0392b;
+}
+.refresh-btn {
+  background-color: #00796b;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background-color: #004d40;
+}

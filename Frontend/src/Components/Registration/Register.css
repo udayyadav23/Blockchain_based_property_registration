@@ -1,0 +1,129 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #141e30, #243b55);
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.register-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  color: #fff;
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.connect-btn {
+  background: #00b894;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  transition: background 0.3s;
+}
+
+.connect-btn:hover {
+  background: #019875;
+}
+
+.wallet-display {
+  font-size: 14px;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"] {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  outline: none;
+}
+
+.role-checkboxes {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.role-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.register-btn {
+  background-color: #0984e3;
+  border: none;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.register-btn:hover {
+  background-color: #0652dd;
+}
+
+/* Mobile Friendly */
+@media screen and (max-width: 480px) {
+  .register-card {
+    padding: 20px;
+  }
+
+  .register-form input {
+    font-size: 14px;
+  }
+
+  .register-title {
+    font-size: 20px;
+  }
+
+  .connect-btn, .register-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
